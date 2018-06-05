@@ -30,6 +30,11 @@ class db extends DatabaseSettings{
 		return $this->link->query("SELECT * FROM GPU");
 	}
 
+	function selectPool($Pool) 
+	{
+		return $this->link->query("SELECT * FROM GPU WHERE `Pool`='$Pool'");
+	}
+
     // Executes a database query
 	function query( $query ) 
 	{
