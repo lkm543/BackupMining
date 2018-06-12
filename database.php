@@ -1,4 +1,6 @@
 <?php
+
+date_default_timezone_set("Asia/Taipei").
 require_once( 'DBsettings.php' );
 
 class db extends DatabaseSettings{
@@ -6,8 +8,8 @@ class db extends DatabaseSettings{
 	public $Query;
 	public $link;
 	
-	public $errno = '';
-	public $error = '';
+	public $errno;
+	public $error;
 
 	// Connects to the database
 	function DBConnect()

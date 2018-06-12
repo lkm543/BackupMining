@@ -1,7 +1,7 @@
 <?php
 class DatabaseSettings
 {
-	public $settings;
+	protected $settings;
 	function getSettings()
 	{
 		// Database variables
