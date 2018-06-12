@@ -14,8 +14,11 @@
 <body>
 
 <?
+	date_default_timezone_set("Asia/Taipei");
+	echo(date("Y-m-d H:i:s"));
 	include_once("database.php");
 	include_once("nano.php");
+	include_once("ethfan.php");
 
 	//New Class?
 	$Status = array(
@@ -27,6 +30,7 @@
 
 	$db = new db();
 	$nano = new nano();
+	$ethfan = new ethfan();
 
 	$db -> DBConnect();
 	$result = $db -> selectAll();
@@ -65,16 +69,16 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
-		/*
+		
 		elseif($ResultArray[$i]["Pool"]=="eth-tw"){
-			$nano->reset();
-			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
+			$ethfan->reset();
+			$ethfan->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
 
-			$nano->getDataFromPool();
+			$ethfan->getDataFromPool();
 			$ResultArray[$i]["Status"] = 0;
-			if(!$nano->ErrorFlag){
-				$ResultArray[$i]["Reported"] = $nano->ReportedHashRate;
-				$ResultArray[$i]["PoolHashRate"] = $nano->HashRate_LongTerm;
+			if(!$ethfan->ErrorFlag){
+				$ResultArray[$i]["Reported"] = $ethfan->ReportedHashRate;
+				$ResultArray[$i]["PoolHashRate"] = $ethfan->HashRate_LongTerm;
 				if($ResultArray[$i]["Reported"]==0){
 				//0 Y 1 Warn 2 Error
 					$ResultArray[$i]["Status"] = 3;
@@ -91,6 +95,7 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
+		/*
 		elseif($ResultArray[$i]["Pool"]=="f2pool"){
 			$nano->reset();
 			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
@@ -159,7 +164,7 @@
 				echo "<th>Owner</th>";
 				echo "<th>Specified</th>";
 				echo "<th>Reported</th>";
-				echo "<th>Longterm</th>";
+				echo "<th>24Hrs</th>";
 				echo "<th>Rig</th>";
 				echo "<th>Card</th>";
 				echo "<th>Status</th>";
@@ -188,8 +193,8 @@
 				echo "<td>".$ResultArray[$i]["Comment"]."</td>";
 				echo "<td>".$ResultArray[$i]["Owner"]."</td>";
 				echo "<td>".$ResultArray[$i]["SpecifiedHashRate"]."</td>";
-				echo "<td>".$ResultArray[$i]["Reported"]."</td>";
-				echo "<td>".$ResultArray[$i]["PoolHashRate"]."</td>";
+				echo "<td>".number_format($ResultArray[$i]["Reported"],2)."</td>";
+				echo "<td>".number_format($ResultArray[$i]["PoolHashRate"],2)."</td>";
 				echo "<td>".$ResultArray[$i]["Rig"]."</td>";
 				echo "<td>".$ResultArray[$i]["Card"]."</td>";
 				echo "<td>".$Status[$ResultArray[$i]["Status"]]."</td>";
