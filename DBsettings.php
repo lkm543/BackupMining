@@ -4,6 +4,7 @@ class DatabaseSettings
 	protected $settings;
 	function getSettings()
 	{
+		
 		// Database variables
 		// Host name
 		$settings['dbhost'] = 'localhost';
