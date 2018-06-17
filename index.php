@@ -158,48 +158,46 @@
 			if ($i == 0) {
 				echo "<tr>";
 				echo "<th>Woker</th>";
-				echo "<th>Address</th>";
 				echo "<th>Pool</th>";
-				echo "<th>Comment</th>";
-				echo "<th>Owner</th>";
 				echo "<th>Specified</th>";
 				echo "<th>Reported</th>";
 				echo "<th>24Hrs</th>";
 				echo "<th>Rig</th>";
 				echo "<th>Card</th>";
 				echo "<th>Status</th>";
+				echo "<th>Owner</th>";
+				echo "<th>Address</th>";
+				echo "<th>Comment</th>";
 				echo "</tr>";
 			}
-			else{
-				echo "<tr";
-				switch ($ResultArray[$i]["Status"]) {
-					case 1:
-						echo(" class=\"table-success\"");
-						break;
-					case 2:
-						echo(" class=\"table-warning\"");
-						break;
-					case 3:
-						echo(" class=\"table-danger\"");
-						break;
-					case 4:
-						echo(" class=\"table-secondary\"");
-						break;
-				}
-				echo ">";
-				echo "<td>".$ResultArray[$i]["Worker"]."</td>";
-				echo "<td>".$ResultArray[$i]["Address"]."</td>";
-				echo "<td>".$ResultArray[$i]["Pool"]."</td>";
-				echo "<td>".$ResultArray[$i]["Comment"]."</td>";
-				echo "<td>".$ResultArray[$i]["Owner"]."</td>";
-				echo "<td>".$ResultArray[$i]["SpecifiedHashRate"]."</td>";
-				echo "<td>".number_format($ResultArray[$i]["Reported"],2)."</td>";
-				echo "<td>".number_format($ResultArray[$i]["PoolHashRate"],2)."</td>";
-				echo "<td>".$ResultArray[$i]["Rig"]."</td>";
-				echo "<td>".$ResultArray[$i]["Card"]."</td>";
-				echo "<td>".$Status[$ResultArray[$i]["Status"]]."</td>";
-				echo "</tr>";
+			echo "<tr";
+			switch ($ResultArray[$i]["Status"]) {
+				case 1:
+					echo(" class=\"table-success\"");
+					break;
+				case 2:
+					echo(" class=\"table-warning\"");
+					break;
+				case 3:
+					echo(" class=\"table-danger\"");
+					break;
+				case 4:
+					echo(" class=\"table-secondary\"");
+					break;
 			}
+			echo ">";
+			echo "<td>".$ResultArray[$i]["Worker"]."</td>";
+			echo "<td>".$ResultArray[$i]["Pool"]."</td>";
+			echo "<td>".$ResultArray[$i]["SpecifiedHashRate"]."</td>";
+			echo "<td>".number_format($ResultArray[$i]["Reported"],2)."</td>";
+			echo "<td>".number_format($ResultArray[$i]["PoolHashRate"],2)."</td>";
+			echo "<td>".$ResultArray[$i]["Rig"]."</td>";
+			echo "<td>".$ResultArray[$i]["Card"]."</td>";
+			echo "<td>".$Status[$ResultArray[$i]["Status"]]."</td>";
+			echo "<td>".$ResultArray[$i]["Owner"]."</td>";
+			echo "<td>".$ResultArray[$i]["Address"]."</td>";
+			echo "<td>".$ResultArray[$i]["Comment"]."</td>";
+			echo "</tr>";
 			$i++;
 		}
 	} else {
