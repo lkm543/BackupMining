@@ -16,6 +16,8 @@
 <?
 	date_default_timezone_set("Asia/Taipei");
 	echo(date("Y-m-d H:i:s"));
+	
+	/*
 	include_once("database.php");
 	include_once("nano.php");
 	include_once("ethfan.php");
@@ -25,7 +27,7 @@
 	
 	//New Class?
 	$Status = array(
-	    1  => "Fine",
+	    1 => "Fine",
 	    2 => "Slow",
 	    3 => "Shut Down",
 	    4 => "API Error",
@@ -37,6 +39,7 @@
 	$f2pool = new f2pool();
 	$uupool = new uupool();
 	#$dwarfpool = new dwarfpool();    ####
+	*/
 	
 	$db -> DBConnect();
 	$result = $db -> selectAll();
@@ -46,13 +49,15 @@
 	while($line = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	    $ResultArray[] = $line;
 	}
-
+	
+	/*
+	##API require push
 	$i = 0;
 	while($i<$result->num_rows)
 	{
 		if($ResultArray[$i]["Pool"]=="nano"){
 			$nano->reset();
-			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
+			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");    #from generalPool.php
 
 			$nano->getDataFromPool();
 			$ResultArray[$i]["Status"] = 0;
@@ -75,7 +80,6 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
-		
 		elseif($ResultArray[$i]["Pool"]=="eth-tw"){
 			$ethfan->reset();
 			$ethfan->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
@@ -126,8 +130,6 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
-		##################
-		
 		elseif($ResultArray[$i]["Pool"]=="uul"){
 			$uupool->reset();
 			$uupool->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
@@ -153,9 +155,6 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
-		
-		##################
-		/*
 		elseif($ResultArray[$i]["Pool"]=="dwarf"){
 			$dwarfpool->reset();
 			$dwarfpool->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
@@ -181,11 +180,11 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
-		*/
-		##################
 		$i++;
 	}
-
+	*/
+	
+	##前端視覺化
 	echo "<table border='1' class=\"table table-striped\">";
 	$i = 0;
 	if ($result->num_rows > 0) {
