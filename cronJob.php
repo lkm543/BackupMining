@@ -10,12 +10,13 @@ require_once("./database.php");
 require_once("./DataType.php");
 require_once("./nano.php");
 require_once("./ethfan.php");
+require_once("./f2pool.php");
 
 $db = new db();
 $nano = new nano();
 $ethfan = new ethfan();
 $DataNow = new DataType();
-#$f2pool = new f2pool();
+$f2pool = new f2pool();
 #$uupool = new uupool();
 #$dwarfpool = new dwarfpool();    ####
 
@@ -83,6 +84,19 @@ while($i<$result->num_rows){
 				$DataNow->ReportedHashRate = $ethfan->ReportedHashRate;
 				$DataNow->HashRate_LongTerm = $ethfan->HashRate_LongTerm;
 				$DataNow->Balance = $ethfan->Balance;
+			}
+			break;
+		case 'f2pool':
+			##API require
+			$f2pool->reset();
+			$f2pool->setBasicData($DataNow->Address,$DataNow->Worker,$DataNow->Coin);
+			$f2pool->getDataFromPool();
+			$APIError = $f2pool->ErrorFlag;
+			
+			if(!$APIError){
+				$DataNow->ReportedHashRate = $f2pool->ReportedHashRate;
+				$DataNow->HashRate_LongTerm = $f2pool->HashRate_LongTerm;
+				$DataNow->Balance = $f2pool->Balance;
 			}
 			break;
 		default:

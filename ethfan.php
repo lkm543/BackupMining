@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set("Asia/Taipei").
 
-require_once( 'generalPool.php' );
+require_once('generalPool.php');
 
 //Reported HashRate
 class ethfan extends generalPool {
