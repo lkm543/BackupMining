@@ -16,13 +16,18 @@
 <?
 	date_default_timezone_set("Asia/Taipei");
 	echo(date("Y-m-d H:i:s"));
+	
+	/*
 	include_once("database.php");
 	include_once("nano.php");
 	include_once("ethfan.php");
-
+	include_once("./temp/f2pool.php");
+	include_once("./temp/uupool.php");
+	#include_once("./temp/dwarfpool.php");    ####
+	
 	//New Class?
 	$Status = array(
-	    1  => "Fine",
+	    1 => "Fine",
 	    2 => "Slow",
 	    3 => "Shut Down",
 	    4 => "API Error",
@@ -31,7 +36,11 @@
 	$db = new db();
 	$nano = new nano();
 	$ethfan = new ethfan();
-
+	$f2pool = new f2pool();
+	$uupool = new uupool();
+	#$dwarfpool = new dwarfpool();    ####
+	*/
+	
 	$db -> DBConnect();
 	$result = $db -> selectAll();
 
@@ -40,13 +49,15 @@
 	while($line = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	    $ResultArray[] = $line;
 	}
-
+	
+	/*
+	##API require push
 	$i = 0;
 	while($i<$result->num_rows)
 	{
 		if($ResultArray[$i]["Pool"]=="nano"){
 			$nano->reset();
-			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
+			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");    #from generalPool.php
 
 			$nano->getDataFromPool();
 			$ResultArray[$i]["Status"] = 0;
@@ -69,7 +80,6 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
-		
 		elseif($ResultArray[$i]["Pool"]=="eth-tw"){
 			$ethfan->reset();
 			$ethfan->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
@@ -95,16 +105,15 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
-		/*
 		elseif($ResultArray[$i]["Pool"]=="f2pool"){
-			$nano->reset();
-			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
-
-			$nano->getDataFromPool();
+			$f2pool->reset();
+			$f2pool->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
+			
+			$f2pool->getDataFromPool();
 			$ResultArray[$i]["Status"] = 0;
-			if(!$nano->ErrorFlag){
-				$ResultArray[$i]["Reported"] = $nano->ReportedHashRate;
-				$ResultArray[$i]["PoolHashRate"] = $nano->HashRate_LongTerm;
+			if(!$f2pool->ErrorFlag){
+				$ResultArray[$i]["Reported"] = $f2pool->ReportedHashRate;
+				$ResultArray[$i]["PoolHashRate"] = $f2pool->HashRate_LongTerm;
 				if($ResultArray[$i]["Reported"]==0){
 				//0 Y 1 Warn 2 Error
 					$ResultArray[$i]["Status"] = 3;
@@ -122,14 +131,14 @@
 			}
 		}
 		elseif($ResultArray[$i]["Pool"]=="uul"){
-			$nano->reset();
-			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
+			$uupool->reset();
+			$uupool->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
 
-			$nano->getDataFromPool();
+			$uupool->getDataFromPool();
 			$ResultArray[$i]["Status"] = 0;
 			if(!$nano->ErrorFlag){
-				$ResultArray[$i]["Reported"] = $nano->ReportedHashRate;
-				$ResultArray[$i]["PoolHashRate"] = $nano->HashRate_LongTerm;
+				$ResultArray[$i]["Reported"] = $uupool->ReportedHashRate;
+				$ResultArray[$i]["PoolHashRate"] = $uupool->HashRate_LongTerm;
 				if($ResultArray[$i]["Reported"]==0){
 				//0 Y 1 Warn 2 Error
 					$ResultArray[$i]["Status"] = 3;
@@ -146,10 +155,36 @@
 				$ResultArray[$i]["Status"] = 4;
 			}
 		}
-		*/
+		elseif($ResultArray[$i]["Pool"]=="dwarf"){
+			$dwarfpool->reset();
+			$dwarfpool->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
+
+			$dwarfpool->getDataFromPool();
+			$ResultArray[$i]["Status"] = 0;
+			if(!$nano->ErrorFlag){
+				$ResultArray[$i]["Reported"] = $dwarfpool->ReportedHashRate;
+				$ResultArray[$i]["PoolHashRate"] = $dwarfpool->HashRate_LongTerm;
+				if($ResultArray[$i]["Reported"]==0){
+				//0 Y 1 Warn 2 Error
+					$ResultArray[$i]["Status"] = 3;
+				}				
+				elseif($ResultArray[$i]["Reported"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]||$ResultArray[$i]["PoolHashRate"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]){
+					$ResultArray[$i]["Status"] = 2;
+				}
+				else{
+					$ResultArray[$i]["Status"] = 1;
+				}
+			}
+			else{
+				//echo("Error!!");
+				$ResultArray[$i]["Status"] = 4;
+			}
+		}
 		$i++;
 	}
-
+	*/
+	
+	##前端視覺化
 	echo "<table border='1' class=\"table table-striped\">";
 	$i = 0;
 	if ($result->num_rows > 0) {
