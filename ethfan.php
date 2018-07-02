@@ -68,8 +68,8 @@ class ethfan extends generalPool {
 			//if(is_null($response->data))
 		    //	$this->ErrorFlag = True;
 
-			$this->HashRate = floatval($response->data[0]->hashrate)/1000000;
-			$this->ReportedHashRate	 = floatval($response->data[0]->localHashrate);
+			$this->HashRate = floatval(end($response->data)->hashrate)/1000000;
+			$this->ReportedHashRate	 = floatval(end($response->data)->localHashrate);
 
 
 			$newURL = str_replace("Address",$newAddress,$this->HashRateAPIurlLongTerm);
