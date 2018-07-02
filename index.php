@@ -15,23 +15,10 @@
 
 <?
 	date_default_timezone_set("Asia/Taipei");
-	echo(date("Y-m-d H:i:s"));
+	
 	include_once("database.php");
-	include_once("nano.php");
-	include_once("ethfan.php");
-
-	//New Class?
-	$Status = array(
-	    1  => "Fine",
-	    2 => "Slow",
-	    3 => "Shut Down",
-	    4 => "API Error",
-	);
 
 	$db = new db();
-	$nano = new nano();
-	$ethfan = new ethfan();
-
 	$db -> DBConnect();
 	$result = $db -> selectAll();
 
@@ -39,115 +26,6 @@
 	$ResultArray = array();
 	while($line = mysqli_fetch_array($result, MYSQLI_ASSOC)){
 	    $ResultArray[] = $line;
-	}
-
-	$i = 0;
-	while($i<$result->num_rows)
-	{
-		if($ResultArray[$i]["Pool"]=="nano"){
-			$nano->reset();
-			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
-
-			$nano->getDataFromPool();
-			$ResultArray[$i]["Status"] = 0;
-			if(!$nano->ErrorFlag){
-				$ResultArray[$i]["Reported"] = $nano->ReportedHashRate;
-				$ResultArray[$i]["PoolHashRate"] = $nano->HashRate_LongTerm;
-				if($ResultArray[$i]["Reported"]==0){
-				//0 Y 1 Warn 2 Error
-					$ResultArray[$i]["Status"] = 3;
-				}				
-				elseif($ResultArray[$i]["Reported"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]||$ResultArray[$i]["PoolHashRate"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]){
-					$ResultArray[$i]["Status"] = 2;
-				}
-				else{
-					$ResultArray[$i]["Status"] = 1;
-				}
-			}
-			else{
-				//echo("Error!!");
-				$ResultArray[$i]["Status"] = 4;
-			}
-		}
-		
-		elseif($ResultArray[$i]["Pool"]=="eth-tw"){
-			$ethfan->reset();
-			$ethfan->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
-
-			$ethfan->getDataFromPool();
-			$ResultArray[$i]["Status"] = 0;
-			if(!$ethfan->ErrorFlag){
-				$ResultArray[$i]["Reported"] = $ethfan->ReportedHashRate;
-				$ResultArray[$i]["PoolHashRate"] = $ethfan->HashRate_LongTerm;
-				if($ResultArray[$i]["Reported"]==0){
-				//0 Y 1 Warn 2 Error
-					$ResultArray[$i]["Status"] = 3;
-				}				
-				elseif($ResultArray[$i]["Reported"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]||$ResultArray[$i]["PoolHashRate"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]){
-					$ResultArray[$i]["Status"] = 2;
-				}
-				else{
-					$ResultArray[$i]["Status"] = 1;
-				}
-			}
-			else{
-				//echo("Error!!");
-				$ResultArray[$i]["Status"] = 4;
-			}
-		}
-		/*
-		elseif($ResultArray[$i]["Pool"]=="f2pool"){
-			$nano->reset();
-			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
-
-			$nano->getDataFromPool();
-			$ResultArray[$i]["Status"] = 0;
-			if(!$nano->ErrorFlag){
-				$ResultArray[$i]["Reported"] = $nano->ReportedHashRate;
-				$ResultArray[$i]["PoolHashRate"] = $nano->HashRate_LongTerm;
-				if($ResultArray[$i]["Reported"]==0){
-				//0 Y 1 Warn 2 Error
-					$ResultArray[$i]["Status"] = 3;
-				}				
-				elseif($ResultArray[$i]["Reported"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]||$ResultArray[$i]["PoolHashRate"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]){
-					$ResultArray[$i]["Status"] = 2;
-				}
-				else{
-					$ResultArray[$i]["Status"] = 1;
-				}
-			}
-			else{
-				//echo("Error!!");
-				$ResultArray[$i]["Status"] = 4;
-			}
-		}
-		elseif($ResultArray[$i]["Pool"]=="uul"){
-			$nano->reset();
-			$nano->setBasicData($ResultArray[$i]["Address"],$ResultArray[$i]["Worker"],"ETH");
-
-			$nano->getDataFromPool();
-			$ResultArray[$i]["Status"] = 0;
-			if(!$nano->ErrorFlag){
-				$ResultArray[$i]["Reported"] = $nano->ReportedHashRate;
-				$ResultArray[$i]["PoolHashRate"] = $nano->HashRate_LongTerm;
-				if($ResultArray[$i]["Reported"]==0){
-				//0 Y 1 Warn 2 Error
-					$ResultArray[$i]["Status"] = 3;
-				}				
-				elseif($ResultArray[$i]["Reported"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]||$ResultArray[$i]["PoolHashRate"]<0.9*$ResultArray[$i]["SpecifiedHashRate"]){
-					$ResultArray[$i]["Status"] = 2;
-				}
-				else{
-					$ResultArray[$i]["Status"] = 1;
-				}
-			}
-			else{
-				//echo("Error!!");
-				$ResultArray[$i]["Status"] = 4;
-			}
-		}
-		*/
-		$i++;
 	}
 
 	echo "<table border='1' class=\"table table-striped\">";
@@ -165,6 +43,7 @@
 				echo "<th>Rig</th>";
 				echo "<th>Card</th>";
 				echo "<th>Status</th>";
+				echo "<th>UpdateTime</th>";
 				echo "<th>Owner</th>";
 				echo "<th>Address</th>";
 				echo "<th>Comment</th>";
@@ -172,16 +51,19 @@
 			}
 			echo "<tr";
 			switch ($ResultArray[$i]["Status"]) {
-				case 1:
+				case "Fine":
 					echo(" class=\"table-success\"");
 					break;
-				case 2:
+				case "Slow LongTerm":
 					echo(" class=\"table-warning\"");
 					break;
-				case 3:
+				case "Slow Report":
 					echo(" class=\"table-danger\"");
 					break;
-				case 4:
+				case "Shut Down":
+					echo(" class=\"table-danger\"");
+					break;
+				case "API Error":
 					echo(" class=\"table-secondary\"");
 					break;
 			}
@@ -190,10 +72,11 @@
 			echo "<td>".$ResultArray[$i]["Pool"]."</td>";
 			echo "<td>".$ResultArray[$i]["SpecifiedHashRate"]."</td>";
 			echo "<td>".number_format($ResultArray[$i]["Reported"],2)."</td>";
-			echo "<td>".number_format($ResultArray[$i]["PoolHashRate"],2)."</td>";
+			echo "<td>".number_format($ResultArray[$i]["24Hrs"],2)."</td>";
 			echo "<td>".$ResultArray[$i]["Rig"]."</td>";
 			echo "<td>".$ResultArray[$i]["Card"]."</td>";
-			echo "<td>".$Status[$ResultArray[$i]["Status"]]."</td>";
+			echo "<td>".$ResultArray[$i]["Status"]."</td>";
+			echo "<td>".$ResultArray[$i]["UpdateTime"]."</td>";
 			echo "<td>".$ResultArray[$i]["Owner"]."</td>";
 			echo "<td>".$ResultArray[$i]["Address"]."</td>";
 			echo "<td>".$ResultArray[$i]["Comment"]."</td>";
