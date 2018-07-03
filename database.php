@@ -5,8 +5,8 @@ require_once( 'DBsettings.php' );
 
 class db extends DatabaseSettings{
 
-	public $Query;    #當前執行的MySQL命令
-	public $link;    #
+	public $Query;
+	public $link;
 	
 	public $errno;
 	public $error;
@@ -26,15 +26,12 @@ class db extends DatabaseSettings{
 		// Connect to the database
 		$this->link = new mysqli( $host , $user , $pass , $name );
 	}
-	
-	##提取所有資料
+
 	function selectAll() 
 	{
-		#return $this->link->query("SELECT * FROM GPU");
-		return $this->link->query("SELECT * FROM gpu");
+		return $this->link->query("SELECT * FROM GPU");
 	}
-	
-	##提取指定Pool資料
+
 	function selectPool($Pool) 
 	{
 		return $this->link->query("SELECT * FROM GPU WHERE `Pool`='$Pool'");

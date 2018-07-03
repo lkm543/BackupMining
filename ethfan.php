@@ -1,7 +1,7 @@
 <?php
 date_default_timezone_set("Asia/Taipei").
 
-require_once('generalPool.php');
+require_once( 'generalPool.php' );
 
 //Reported HashRate
 class ethfan extends generalPool {
@@ -45,7 +45,6 @@ class ethfan extends generalPool {
 	public function getDataFromPool(){
 		try {
 			$newAddress = str_replace("0x","",$this->Address);
-			//echo($this->Address."<br>");
 			//Balance
 			$newURL = str_replace("Address",$newAddress,$this->BillAPIurl);
 			//echo("------------------------------------------<br>");
@@ -69,13 +68,8 @@ class ethfan extends generalPool {
 			//if(is_null($response->data))
 		    //	$this->ErrorFlag = True;
 
-<<<<<<< HEAD
-			$this->HashRate = floatval($response->data[0]->hashrate)/1000000;
-			$this->ReportedHashRate	 = floatval($response->data[0]->localHashrate);
-=======
 			$this->HashRate = floatval(end($response->data)->hashrate)/1000000;
 			$this->ReportedHashRate	 = floatval(end($response->data)->localHashrate);
->>>>>>> f90ddc8a6c3f1b04973cb49f4569856899a28854
 
 
 			$newURL = str_replace("Address",$newAddress,$this->HashRateAPIurlLongTerm);
