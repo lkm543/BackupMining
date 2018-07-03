@@ -16,7 +16,6 @@ $WarnRatio = 0.9;
 $process_num = 25;
 
 $db = new db();
-
 $db->DBConnect();
 $result = $db->selectAll();
 
@@ -37,9 +36,6 @@ $StatusArray = array(
 
 
 #echo(var_dump($ResultArray));
-
-$i=0;
-
 #$uupool = new uupool();
 #$dwarfpool = new dwarfpool();    ####
 
@@ -60,7 +56,7 @@ for($i = 0;$i<$result->num_rows; $i++) {
 }
 
 if($pid) { /* Parent */
-    sleep(10); 
+    //sleep(10); 
 } else {
 
 	$db2 = new db();
