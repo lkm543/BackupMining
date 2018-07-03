@@ -12,15 +12,10 @@ require_once("./nano.php");
 require_once("./ethfan.php");
 require_once("./f2pool.php");
 
-$db = new db();
-$nano = new nano();
-$ethfan = new ethfan();
-$DataNow = new DataType();
-$f2pool = new f2pool();
-#$uupool = new uupool();
-#$dwarfpool = new dwarfpool();    ####
-
 $WarnRatio = 0.9;
+$process_num = 25;
+
+$db = new db();
 
 $db->DBConnect();
 $result = $db->selectAll();
@@ -44,11 +39,35 @@ $StatusArray = array(
 #echo(var_dump($ResultArray));
 
 $i=0;
-while($i<$result->num_rows){
-	####或許該要先檢查$ResultArray[$i]["Comment"]來確定機台是否不在或是離現線?
-	####不需要 每次重新載一次才知道有沒有重新上線之類的 by:LKM
 
-	$DataNow->resetData();
+#$uupool = new uupool();
+#$dwarfpool = new dwarfpool();    ####
+
+$children = array();
+
+for($i = 0;$i<$result->num_rows; $i++) {
+    $pid = pcntl_fork();
+    if($pid == -1) {
+        exit(1);
+    } else if ($pid) {
+    //Parent
+	    $children[] = $pid; //紀錄下每個孩子的編號
+	    #echo(var_dump($children));
+   } else {
+   //Children
+    break; //直接出迴圈
+   }
+}
+
+if($pid) { /* Parent */
+    sleep(10); 
+} else {
+
+	$db2 = new db();
+	$db2->DBConnect();
+
+	$DataNow = new DataType();
+    $DataNow->resetData();
 	#echo(var_dump($DataNow));
 	$DataNow->Address = $ResultArray[$i]["Address"];
 	$DataNow->Worker = $ResultArray[$i]["Worker"];
@@ -61,6 +80,7 @@ while($i<$result->num_rows){
 
 	switch ($PoolNow) {
 		case 'nano':
+			$nano = new nano();
 			##API require
 			$nano->reset();
 			$nano->setBasicData($DataNow->Address,$DataNow->Worker,$DataNow->Coin);
@@ -75,6 +95,7 @@ while($i<$result->num_rows){
 			break;
 		case 'eth-tw':
 			##API require
+			$ethfan = new ethfan();
 			$ethfan->reset();
 			$ethfan->setBasicData($DataNow->Address,$DataNow->Worker,$DataNow->Coin);
 			$ethfan->getDataFromPool();
@@ -88,6 +109,7 @@ while($i<$result->num_rows){
 			break;
 		case 'f2pool':
 			##API require
+			$f2pool = new f2pool();
 			$f2pool->reset();
 			$f2pool->setBasicData($DataNow->Address,$DataNow->Worker,$DataNow->Coin);
 			$f2pool->getDataFromPool();
@@ -125,8 +147,8 @@ while($i<$result->num_rows){
 
 	$cmd= "UPDATE GPU SET Balance = '$DataNow->Balance' , Reported = '$DataNow->ReportedHashRate' , 24Hrs = '$DataNow->HashRate_LongTerm' , Status = '$StatusArray[$Status]' , UpdateTime = '$timeNow' WHERE Worker = '$DataNow->Worker' AND Address= '$DataNow->Address'";
 	echo($cmd."<br>");
-	$db->query($cmd);
-	
-	$i+=1;
+	$db2->query($cmd);
 }
+
+
 ?>
