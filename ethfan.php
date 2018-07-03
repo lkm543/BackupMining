@@ -45,6 +45,7 @@ class ethfan extends generalPool {
 	public function getDataFromPool(){
 		try {
 			$newAddress = str_replace("0x","",$this->Address);
+			//echo($this->Address."<br>");
 			//Balance
 			$newURL = str_replace("Address",$newAddress,$this->BillAPIurl);
 			//echo("------------------------------------------<br>");
@@ -63,7 +64,6 @@ class ethfan extends generalPool {
 			//echo($newURL."<br>");
 
 			$response = file_get_contents($newURL);
-			//echo($APIurl.$Address);
 			$response = json_decode($response);
 			//echo(var_dump($response->data)."<br>");
 			//if(is_null($response->data))
@@ -71,8 +71,6 @@ class ethfan extends generalPool {
 
 			$this->HashRate = floatval($response->data[0]->hashrate)/1000000;
 			$this->ReportedHashRate	 = floatval($response->data[0]->localHashrate);
-			//echo($response->data[0]->hashrate."<br>");
-			//echo($response->data[0]->localHashrate."<br>");
 
 
 			$newURL = str_replace("Address",$newAddress,$this->HashRateAPIurlLongTerm);
