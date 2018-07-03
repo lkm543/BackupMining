@@ -1,13 +1,7 @@
 <?php
-abstract class generalPool
+require_once("DataType.php");
+abstract class generalPool extends DataType
 {
-	public $Address;
-	public $Worker;
-	public $HashRate;
-	public $HashRate_LongTerm;
-	public $ReportedHashRate;
-	public $Balance;
-	public $Coin;
 	
 	//Generate Address Worker Coin from DB
 	public function setBasicData($addr,$workerID,$CoinInput){
