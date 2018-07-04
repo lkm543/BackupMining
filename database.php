@@ -22,6 +22,7 @@ class db extends DatabaseSettings{
 		$name = $settings['dbname'];
 		$user = $settings['dbusername'];
 		$pass = $settings['dbpassword'];
+		mysqli_set_charset($this->link,'utf8');
 		
 		// Connect to the database
 		$this->link = new mysqli( $host , $user , $pass , $name );
@@ -34,6 +35,7 @@ class db extends DatabaseSettings{
 
 	function selectPool($Pool) 
 	{
+		$Pool = $this->link->real_escape_string( $Pool );
 		return $this->link->query("SELECT * FROM GPU WHERE `Pool`='$Pool'");
 	}
 
@@ -41,12 +43,12 @@ class db extends DatabaseSettings{
 	function query( $query ) 
 	{
 		$this->Query = $query;
-		return mysqli_query( $this->link , $query );
+		return mysqli_query( $this->link , $query);
 	}
 
 	function escapeString( $query )
 	{
-		return $this->link->escape_string( $query );
+		return $this->link->real_escape_string( $query );
 	}
 	
 	// Get the data return int result
