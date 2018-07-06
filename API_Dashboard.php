@@ -48,15 +48,6 @@
 	$Coins[5]['EarningRate']= floatval($AnalysisArray[0]['EarningXMR']);
 	$Coins[5]['CoinUSD']= floatval($AnalysisArray[0]['XMRUSD']);
 
-	echo "{";
-	echo "\"MsgCode\": 0,";
-	echo "\"Message\": \"Success\",";
-	echo "\"CardAmounts\": $CardAmounts,";
-
-
-	$TotalEarning = 0.0;
-	//echo(var_dump($AverageHashRate*$Coins[$j]['EarningRate']));
-
 	//echo (var_dump($ResultArray));
 	for ($i=0;$i<$CardAmounts;$i++) {
 		$Coin = $ResultArray[$i]['Coin'];
@@ -85,8 +76,19 @@
 
 
 
+	$TotalEarning = 0.0;
 	for ($j=0;$j<$NCoins;$j++)
 		$TotalEarning = $TotalEarning + $Coins[$j]['EstimateRevenueUSD'];
+
+	//Bug!!!!!!!! TIME SHOULD BE THE LAST
+	$UpdateTime = $ResultArray[0]['UpdateTime'];
+	$PoolTime = $ResultArray[0]['PoolTime'];
+	//Bug!!!!!!!! TIME SHOULD BE THE LAST
+ 
+	echo "{";
+	echo "\"MsgCode\": 0,";
+	echo "\"Message\": \"Success\",";
+	echo "\"CardAmounts\": $CardAmounts,";
 	echo "\"Coins\": {";
 	for ($i=0;$i<$NCoins;$i++) {
 		echo "\"{$Coins[$i]['Coin']}\":";
@@ -100,9 +102,10 @@
 		echo "\"EstimateRevenueUSD\": {$Coins[$i]['EstimateRevenueUSD']}";
 		echo $i<($NCoins-1)? "},":"}";
 	}
-	echo "},";
-	
-	echo "\"EstimateRevenueUSD\": {$TotalEarning}";
+	echo "},";	
+	echo "\"EstimateRevenueUSD\": {$TotalEarning},";
+	echo "\"PoolTime\": \"{$PoolTime}\",";
+	echo "\"UpdateTime\": \"{$UpdateTime}\"";
 	echo "}";
 	 
 	$db->close();
