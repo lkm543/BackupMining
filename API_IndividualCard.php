@@ -25,27 +25,32 @@
 	  http_response_code(404);
 	  die(mysqli_error());
 	}
-
-
-	echo "{";
-	echo "\"MsgCode\": 0,";
-	echo "\"Message\": \"Success\",";
-	echo "\"Workers\": [";
-	for ($i=0;$i<$CardAmounts;$i++) {
-		echo "{\"Worker\": \"{$ResultArray[$i]['Worker']}\",";
-		echo "\"Coin\": \"{$ResultArray[$i]['Coin']}\",";
-		echo "\"Pool\": \"{$ResultArray[$i]['Pool']}\",";
-		echo "\"Address\": \"{$ResultArray[$i]['Address']}\",";
-		echo "\"SpecifiedHashRate\": {$ResultArray[$i]['SpecifiedHashRate']},";
-		echo "\"ReportHashRate\": {$ResultArray[$i]['Reported']},";
-		echo "\"AverageHashRate\": {$ResultArray[$i]['24Hrs']},";
-		echo "\"StartDate\": \"{$ResultArray[$i]['StartDate']}\",";
-		echo "\"PoolTime\": \"{$ResultArray[$i]['PoolTime']}\",";
-		echo "\"UpdateTime\": \"{$ResultArray[$i]['UpdateTime']}\"";
-		echo $i<($CardAmounts-1)? "},":"}";
+	if($db->numRows($result)!=0){
+		echo "{";
+		echo "\"MsgCode\": 0,";
+		echo "\"Message\": \"Success\",";
+		echo "\"Workers\": [";
+		for ($i=0;$i<$CardAmounts;$i++) {
+			echo "{\"Worker\": \"{$ResultArray[$i]['Worker']}\",";
+			echo "\"Coin\": \"{$ResultArray[$i]['Coin']}\",";
+			echo "\"Pool\": \"{$ResultArray[$i]['Pool']}\",";
+			echo "\"Address\": \"{$ResultArray[$i]['Address']}\",";
+			echo "\"SpecifiedHashRate\": {$ResultArray[$i]['SpecifiedHashRate']},";
+			echo "\"ReportHashRate\": {$ResultArray[$i]['Reported']},";
+			echo "\"AverageHashRate\": {$ResultArray[$i]['24Hrs']},";
+			echo "\"StartDate\": \"{$ResultArray[$i]['StartDate']}\",";
+			echo "\"PoolTime\": \"{$ResultArray[$i]['PoolTime']}\",";
+			echo "\"UpdateTime\": \"{$ResultArray[$i]['UpdateTime']}\"";
+			echo $i<($CardAmounts-1)? "},":"}";
+		}
+		echo "]";	
+		echo "}";
 	}
-	echo "]";	
-	echo "}";
-	 
+	else{
+	  echo "{";
+	  echo "\"MsgCode\": 2,";
+	  echo "\"Message\": \"User Not Found!\"";
+	  echo "}";
+	}
 	$db->close();
 ?>
